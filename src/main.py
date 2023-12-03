@@ -20,15 +20,6 @@ def synchronous_example() -> float:
     return end_time - start_time
 
 
-async def async_aiboto3_example():
-    session = aioboto3.Session()
-    async with session.client("s3") as s3:
-        start_time = perf_counter()
-        await asyncio.gather(*[s3.list_buckets() for _ in range(AMOUNT_OF_CALLS)])
-        end_time = perf_counter()
-        return end_time - start_time
-
-
 async def async_boto3_example() -> float:
     client = boto3.client("s3")
     loop = asyncio.get_running_loop()
@@ -44,11 +35,20 @@ async def async_boto3_example() -> float:
     return end_time - start_time
 
 
+async def async_aioboto3_example():
+    session = aioboto3.Session()
+    async with session.client("s3") as s3:
+        start_time = perf_counter()
+        await asyncio.gather(*[s3.list_buckets() for _ in range(AMOUNT_OF_CALLS)])
+        end_time = perf_counter()
+        return end_time - start_time
+
+
 def main():
     """Entry point of the application."""
     sync_elapsed_time_total = 0
     async_boto3_elapsed_time_total = 0
-    async_aiboto3_elapsed_time_total = 0
+    async_aioboto3_elapsed_time_total = 0
 
     for i in range(TIMES_TO_RUN_PERFORMANCE_TEST):
         elapsed_time = synchronous_example()
@@ -60,9 +60,10 @@ def main():
         async_boto3_elapsed_time_total += elapsed_time
         print(f"async boto3 elapsed time for run {i}: {elapsed_time} seconds")
 
+    loop = asyncio.new_event_loop()
     for i in range(TIMES_TO_RUN_PERFORMANCE_TEST):
-        elapsed_time = asyncio.run(async_aiboto3_example())
-        async_aiboto3_elapsed_time_total += elapsed_time
+        elapsed_time = loop.run_until_complete((async_aioboto3_example()))
+        async_aioboto3_elapsed_time_total += elapsed_time
         print(f"async aioboto3 elapsed time for run {i}: {elapsed_time} seconds")
 
     print(
@@ -72,7 +73,7 @@ def main():
         f"Average async boto3 elapsed time: {async_boto3_elapsed_time_total / TIMES_TO_RUN_PERFORMANCE_TEST} seconds"
     )
     print(
-        f"Average async aioboto3 elapsed time: {async_aiboto3_elapsed_time_total / TIMES_TO_RUN_PERFORMANCE_TEST} seconds"
+        f"Average async aioboto3 elapsed time: {async_aioboto3_elapsed_time_total / TIMES_TO_RUN_PERFORMANCE_TEST} seconds"
     )
 
 
