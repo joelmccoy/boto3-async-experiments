@@ -6,8 +6,8 @@ import aioboto3
 import boto3
 
 # The ammount of calls to make to list_buckets
-AMOUNT_OF_CALLS = 1
-TIMES_TO_RUN_PERFORMANCE_TEST = 100
+AMOUNT_OF_CALLS = 100
+TIMES_TO_RUN_PERFORMANCE_TEST = 3
 
 
 def synchronous_example() -> float:
