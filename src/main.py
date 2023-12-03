@@ -5,8 +5,8 @@ from time import perf_counter
 import aioboto3
 import boto3
 
-# The ammount of calls to make to list_buckets
-AMOUNT_OF_CALLS = 100
+
+AMOUNT_OF_CALLS = 100  # The ammount of calls to make to list_buckets
 TIMES_TO_RUN_PERFORMANCE_TEST = 3
 
 
@@ -50,7 +50,6 @@ def main():
     async_boto3_elapsed_time_total = 0
     async_aiboto3_elapsed_time_total = 0
 
-    # Run the synchronous example multiple times to get an average
     for i in range(TIMES_TO_RUN_PERFORMANCE_TEST):
         elapsed_time = synchronous_example()
         sync_elapsed_time_total += elapsed_time
