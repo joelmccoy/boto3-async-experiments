@@ -14,7 +14,6 @@ def synchronous_example() -> float:
     """Tests the performance of the boto3 client used synchronously."""
     client = boto3.client("s3")
     start_time = perf_counter()
-    # Make 20 calls to list_buckets
     for _ in range(AMOUNT_OF_CALLS):
         client.list_buckets()
     end_time = perf_counter()
